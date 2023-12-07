@@ -9,7 +9,7 @@ import {
 } from 'react-bootstrap';
 import Auth from '../utils/auth';
 import { useMutation } from '@apollo/client';
-import { SAVE_BOOK } from '../graphql/mutations'; // Import the SAVE_BOOK mutation
+import { SAVE_BOOK } from '../utils/mutations'; // Import the SAVE_BOOK mutation
 
 const SearchBooks = () => {
   // ... (other existing state and logic)
