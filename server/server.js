@@ -7,6 +7,7 @@ const resolvers = require('./Schemas/resolvers');
 const { authMiddleware } = require('./utils/auth');
 const { typeDefs, resolvers } = require('./schemas');
 const db = require('./config/connection');
+const expressMiddleware = require('express-graphql');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
