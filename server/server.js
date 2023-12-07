@@ -1,11 +1,12 @@
 const express = require('express');
-const { ApolloServer } = require('apollo-server-express');
+// const { ApolloServer } = require('apollo-server-express');
 const path = require('path');
 const db = require('./config/connection');
 const typeDefs = require('./Schemas/typeDefs');
 const resolvers = require('./Schemas/resolvers');
 const { authMiddleware } = require('./utils/auth');
-const expressMiddleware = require('express-graphql');
+const { ApolloServer } = require('@apollo/server');
+const { expressMiddleware } = require('@apollo/server/express4');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
