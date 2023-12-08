@@ -1,14 +1,15 @@
 const { User, Book } = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-// const { AuthenticationError } = require('apollo-server-express');
 const { signToken, AuthenticationError } = require('../utils/auth');
 
 const resolvers = {
   Query: {
     me: async (parent, args, context) => {
       if (context.user) {
-        return User.findOne({ _id: context.user._id }).populate('books');
+        const user = await User.findOne({ _id: context.user._id }).select('-__v -password')
+        console.log(user);
+        return user;
       }
       throw AuthenticationError;
     },
