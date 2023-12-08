@@ -1,12 +1,8 @@
 const { User, Book } = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { AuthenticationError } = require('apollo-server-express');
-
-// Helper function to generate JWT token
-const generateToken = (user) => {
-  return jwt.sign({ userId: user._id }, 'your_secret_key', { expiresIn: '1h' });
-};
+// const { AuthenticationError } = require('apollo-server-express');
+const { signToken, AuthenticationError } = require('../utils/auth');
 
 const resolvers = {
   Query: {
@@ -32,7 +28,7 @@ const resolvers = {
         throw new Error('Invalid password');
       }
 
-      const token = generateToken(user);
+      const token = signToken(user);
       return { token, user };
     },
 
@@ -43,9 +39,9 @@ const resolvers = {
         throw new Error('User already exists');
       }
 
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const newUser = await User.create({ username, email, password: hashedPassword });
-      const token = generateToken(newUser);
+      // const hashedPassword = await bcrypt.hash(password, 10);
+      const newUser = await User.create({ username, email, password });
+      const token = signToken(newUser);
       return { token, user: newUser };
     },
 
@@ -58,28 +54,19 @@ const resolvers = {
         );
         return updatedUser;
       }
-      throw new AuthenticationError('You need to be logged in!');
+      throw AuthenticationError;
     },
 
     removeBook: async (_, { bookId }, { user }) => {
       if (!user) {
-        throw new AuthenticationError('You need to be logged in!');
-      }
+        throw AuthenticationError;
+      } 
 
-      const currentUser = await User.findById(user._id);
+      const currentUser = await User.findByIdAndUpdate(user._id, 
+        { $pull: { savedBooks: { bookId } } }, { new: true });
       if (!currentUser) {
         throw new Error('User not found');
-      }
-
-      const removedBook = await Book.findByIdAndRemove(bookId);
-      if (!removedBook) {
-        throw new Error('Book not found');
-      }
-
-      currentUser.books.pull(bookId);
-      await currentUser.save();
-
-      return removedBook;
+      } return currentUser;
     },
   },
 };
