@@ -1,6 +1,6 @@
-const { User, Book } = require('../models');
+const { User } = require('../models');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 const { signToken, AuthenticationError } = require('../utils/auth');
 
 const resolvers = {
